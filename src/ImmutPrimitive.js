@@ -1,7 +1,7 @@
 import Immut from './Immut';
 
-function ImmutPrimitive(value, parent) {
-  Immut.call(this, value, parent);
+function ImmutPrimitive(source, onChange) {
+  Immut.call(this, source, onChange);
   Object.freeze(this);
 }
 

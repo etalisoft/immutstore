@@ -1,26 +1,20 @@
-import { VALUE, PARENT } from './symbols';
+import { CHANGE, VALUE } from './constants';
 
-function Immut(value, parent) {
-  this[VALUE] = value;
-  this[PARENT] = parent;
+function Immut(source, onChange) {
+  this[VALUE] = source;
+  this[CHANGE] = onChange;
 }
-
 Object.defineProperties(Immut.prototype, {
-  value: {
-    enumerable: true,
-    get: function() {
-      return this[VALUE];
-    },
-    set: function(value) {
-      if (value !== this[VALUE]) {
-        this[PARENT].set(this, value);
-      }
-    },
-  },
-  delete: {
+  get: {
     enumerable: true,
     value: function() {
-      this[PARENT].delete(this);
+      return this[VALUE];
+    },
+  },
+  set: {
+    enumerable: true,
+    value: function(map) {
+      this[CHANGE](this, map(this[VALUE]));
     },
   },
 });

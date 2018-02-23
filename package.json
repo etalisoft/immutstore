@@ -2,7 +2,9 @@
   "name": "immut-store",
   "version": "1.0.0",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage"
   },
   "main": "",
   "author": "Jason Whitted <etalisoft@gmail.com>",

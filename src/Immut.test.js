@@ -1,34 +1,37 @@
 import Immut from './Immut';
 
 describe('Immut', () => {
-  it('should be Immut', () => {
-    const immut = new Immut('abc', {});
+  it('should return an Immut', () => {
+    const immut = new Immut(1);
     expect(immut).toBeInstanceOf(Immut);
   });
 
-  it('immut.value returns value', () => {
-    const immut = new Immut('abc', {});
-    expect(immut.value).toBe('abc');
+  it('should NOT be frozen', () => {
+    const immut = new Immut(1);
+    const mutate = () => {
+      immut.mutated = true;
+    };
+    expect(mutate).not.toThrow();
   });
 
-  it('immut.value=same does not call parent.set()', () => {
-    const parent = { set: jest.fn() };
-    const immut = new Immut('a', parent);
-    immut.value = 'a';
-    expect(parent.set).not.toHaveBeenCalledWith(immut, 'a');
+  it('immut.get() should return value', () => {
+    const immut = new Immut(1);
+    expect(immut.get()).toBe(1);
   });
 
-  it('immut.value=different calls parent.set()', () => {
-    const parent = { set: jest.fn() };
-    const immut = new Immut('a', parent);
-    immut.value = 'b';
-    expect(parent.set).toHaveBeenCalledWith(immut, 'b');
-  });
+  describe('immut.set()', () => {
+    it('should call map function with value', () => {
+      const immut = new Immut(1, jest.fn());
+      const map = jest.fn();
+      immut.set(map);
+      expect(map).toHaveBeenCalledWith(1);
+    });
 
-  it('immut.delete() calls parent.delete()', () => {
-    const parent = { delete: jest.fn() };
-    const immut = new Immut('abc', parent);
-    immut.delete();
-    expect(parent.delete).toHaveBeenCalledWith(immut);
+    it('should call parent.set() with the new value', () => {
+      const change = jest.fn();
+      const immut = new Immut(5, change);
+      immut.set(v => v * 2);
+      expect(change).toHaveBeenCalledWith(immut, 10);
+    });
   });
 });
