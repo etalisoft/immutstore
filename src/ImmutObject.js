@@ -1,8 +1,9 @@
+import createImmut from './createImmut';
 import Immut from './Immut';
 
 const RESERVED = { value: true, delete: true };
 
-export default function ImmutObject(source, parent) {
+function ImmutObject(source, parent) {
   var actions = {
     set(key, value) {
       throw new Error('Not implemented');
@@ -12,22 +13,18 @@ export default function ImmutObject(source, parent) {
     },
   };
 
-  const immut = {
-    get value() {
-      return;
-    },
-    set value(value) {
-      return parent.set(immut, value);
-    },
-    delete() {
-      return parent.delete(immut);
-    },
-  };
-
+  var json = {};
   for (let k in source) {
     if (RESERVED[k]) throw new Error(`Key is reserved: ${k}`);
-    immut[k] = Immut(value, actions);
+    const immut = createImmut(source[k], actions);
+    json[k] = (this[k] = immut).value;
   }
 
-  return Object.freeze(immut);
+  Immut.call(this, json, parent);
+
+  Object.freeze(this);
 }
+
+ImmutObject.prototype = Object.create(Immut.prototype);
+
+export default ImmutObject;

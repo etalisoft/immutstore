@@ -1,12 +1,29 @@
-import ImmutPrimitive from './ImmutPrimitive';
-import ImmutObject from './ImmutObject';
+const VALUE = Symbol('source');
+const PARENT = Symbol('actions');
 
-const PRIMITIVE = { string: true, number: true, boolean: true };
-
-export default function(value, parent) {
-  const type = typeof value;
-  if (type === null || PRIMITIVE[type]) return ImmutPrimitive(value, parent);
-  else if (value instanceof Array) throw new Error(`Type not supported: ${k}:${t}`);
-  else if (type === 'object') return ImmutObject(value, parent);
-  else throw new Error(`Type not supported: ${k}:${t}`);
+function Immut(value, parent) {
+  this[VALUE] = value;
+  this[PARENT] = parent;
 }
+
+Object.defineProperties(Immut.prototype, {
+  value: {
+    enumerable: true,
+    get: function() {
+      return this[VALUE];
+    },
+    set: function(value) {
+      if (value !== this[VALUE]) {
+        this[PARENT].set(this, value);
+      }
+    },
+  },
+  delete: {
+    enumerable: true,
+    value: function() {
+      this[PARENT].delete(this);
+    },
+  },
+});
+
+export default Immut;

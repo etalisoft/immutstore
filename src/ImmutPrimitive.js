@@ -1,14 +1,10 @@
-export default function ImmutPrimitive(value, parent) {
-  const immut = {
-    get value() {
-      return value;
-    },
-    set value(value) {
-      parent.set(immut, value);
-    },
-    delete() {
-      parent.delete(immut);
-    },
-  };
-  return Object.freeze(immut);
+import Immut from './Immut';
+
+function ImmutPrimitive(value, parent) {
+  Immut.call(this, value, parent);
+  Object.freeze(this);
 }
+
+ImmutPrimitive.prototype = Object.create(Immut.prototype);
+
+export default ImmutPrimitive;

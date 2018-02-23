@@ -13,7 +13,7 @@ beforeEach(() => {
 });
 
 describe('Store', () => {
-  test('should', () => {
+  it('should', () => {
     initialState = {
       a: 'bob',
       b: 123,
