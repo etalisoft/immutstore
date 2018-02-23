@@ -1,3 +1,4 @@
+import { VALUE } from './symbols';
 import createImmut from './createImmut';
 import Immut from './Immut';
 
@@ -26,5 +27,15 @@ function ImmutObject(source, parent) {
 }
 
 ImmutObject.prototype = Object.create(Immut.prototype);
+
+Object.defineProperty(ImmutObject.prototype, 'value', {
+  enumerable: true,
+  get() {
+    return Object.keys(this).reduce((o, k) => {
+      o[k] = this[k].value;
+      return o;
+    }, {});
+  },
+});
 
 export default ImmutObject;

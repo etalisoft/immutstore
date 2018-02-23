@@ -1,5 +1,4 @@
-const VALUE = Symbol('source');
-const PARENT = Symbol('actions');
+import { VALUE, PARENT } from './symbols';
 
 function Immut(value, parent) {
   this[VALUE] = value;

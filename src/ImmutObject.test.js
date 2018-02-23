@@ -50,4 +50,17 @@ describe('ImmutObject', () => {
     expect(immut.value).not.toBe(init);
     expect(immut.value).toEqual(init);
   });
+
+  it('object.value json should be generated', () => {
+    const initialState = {
+      a: {
+        b: 'b',
+      },
+    };
+    const immut = new ImmutObject(initialState);
+    const value = immut.value;
+    expect(immut.value).toEqual(initialState);
+    value.a.b = 'B';
+    expect(immut.value).toEqual(initialState);
+  });
 });
