@@ -21,5 +21,6 @@ describe('Store', () => {
       d: true,
     };
     const store = Store(initialState);
+    expect(store.state.a.value).toBe(initialState.a);
   });
 });
