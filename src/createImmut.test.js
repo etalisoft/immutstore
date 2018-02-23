@@ -24,4 +24,37 @@ describe('createImmut', () => {
     expect(immut).toBeInstanceOf(Immut);
     expect(immut).toBeInstanceOf(ImmutObject);
   });
+
+  it('{}.toImmut should return ImmutObject', () => {
+    const init = {
+      a: 'a',
+      toImmut: () => ({ b: 'b' }),
+    };
+    const immut = createImmut(init);
+    expect(immut.get()).toEqual({ b: 'b' });
+  });
+
+  it('{}.toJSON should return ImmutObject', () => {
+    const init = {
+      a: 'a',
+      toJSON: () => ({ b: 'b' }),
+    };
+    const immut = createImmut(init);
+    expect(immut.get()).toEqual({ b: 'b' });
+  });
+
+  it('Date should return ImmutPrimitive', () => {
+    const init = {
+      a: 'a',
+      toImmut: () => new Date(), // Date.prototype.toJSON returns a string
+    };
+    const immut = createImmut(init);
+    expect(immut).toBeInstanceOf(ImmutPrimitive);
+    expect(typeof immut.get()).toBe('string');
+  });
+
+  it('should otherwise return undefined', () => {
+    const immut = createImmut(undefined);
+    expect(immut).toBe(undefined);
+  });
 });

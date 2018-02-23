@@ -4,10 +4,16 @@ import ImmutPrimitive from './ImmutPrimitive';
 
 const PRIMITIVE = { string: true, number: true, boolean: true };
 
-export default function(value, onChange) {
+function createImmut(value, onChange) {
   const type = typeof value;
   if (value === null || PRIMITIVE[type]) return new ImmutPrimitive(value, onChange);
   if (Object.prototype.toString.call(value) === '[object Array]') return new ImmutArray(value, onChange);
-  if (type === 'object') return new ImmutObject(value, onChange);
-  throw new Error(`Invalid Immut type: ${type}`);
+  if (type === 'object') {
+    if (typeof value.toImmut === 'function') return createImmut(value.toImmut());
+    if (typeof value.toJSON === 'function') return createImmut(value.toJSON());
+    return new ImmutObject(value, onChange);
+  }
+  return undefined;
 }
+
+export default createImmut;
