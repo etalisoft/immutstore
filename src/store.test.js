@@ -57,18 +57,31 @@ describe('Store', () => {
     });
   });
 
-  it('should return the value', () => {
+  it('state.value should return the value', () => {
     const store = Store(123);
     expect(store.state.value).toBe(123);
   });
 
-  it('should update the value', () => {
+  it('state.value=x should update the value', () => {
     const store = Store(123);
     store.state.value = { a: 'a' };
     expect(store.state.value).toEqual({ a: 'a' });
   });
 
-  it('should not allow deletion', () => {
+  it.skip('state.key.value=x should update the state', () => {
+    const init = {
+      a: 'a',
+      b: 'b',
+    };
+    const store = Store(init);
+    store.state.a.value = 123;
+    expect(store.state.value).toEqual({
+      a: 123,
+      b: 'b',
+    });
+  });
+
+  it('state.delete() should not allowed', () => {
     const store = Store(123);
     const deletion = () => {
       store.state.value.delete();
