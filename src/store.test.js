@@ -1,3 +1,4 @@
+import Immut from './Immut';
 import Store from './store';
 
 let initialState;
@@ -13,14 +14,65 @@ beforeEach(() => {
 });
 
 describe('Store', () => {
-  it('should', () => {
-    initialState = {
-      a: 'bob',
-      b: 123,
-      c: null,
-      d: true,
+  describe('ctor', () => {
+    it('should create store', () => {
+      initialState = {
+        a: 'bob',
+        b: 123,
+        c: null,
+        d: true,
+      };
+      const store = Store(initialState);
+      expect(store.state).toBeInstanceOf(Immut);
+      expect(store.state.a.value).toBe(initialState.a);
+    });
+
+    it('store should be frozen', () => {
+      const store = Store(123);
+      const mutateStore = () => {
+        store.mutated = true;
+      };
+      expect(mutateStore).toThrow();
+    });
+
+    it('store.state should be frozen', () => {
+      const mutateState = () => {
+        store.state.mutated = true;
+      };
+      expect(mutateState).toThrow();
+    });
+
+    it('should not mutate when initial source changes', () => {
+      initialState = {
+        name: {
+          first: 'Bob',
+        },
+      };
+      const store = Store(initialState);
+      expect(store.state.name.first.value).toBe('Bob');
+      const curState = store.state.value;
+      expect(curState).toEqual(initialState);
+      initialState.name = { first: 'Joe' };
+      expect(store.state.value).toEqual(curState);
+    });
+  });
+
+  it('should return the value', () => {
+    const store = Store(123);
+    expect(store.state.value).toBe(123);
+  });
+
+  it('should update the value', () => {
+    const store = Store(123);
+    store.state.value = { a: 'a' };
+    expect(store.state.value).toEqual({ a: 'a' });
+  });
+
+  it('should not allow deletion', () => {
+    const store = Store(123);
+    const deletion = () => {
+      store.state.value.delete();
     };
-    const store = Store(initialState);
-    expect(store.state.a.value).toBe(initialState.a);
+    expect(deletion).toThrow();
   });
 });
