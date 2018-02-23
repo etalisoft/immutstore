@@ -8,7 +8,6 @@ function ImmutPrimitive(source, onChange) {
 
 ImmutPrimitive.prototype = Object.create(Immut.prototype, {
   set: {
-    enumerable: true,
     value: function(map) {
       const oldValue = this[VALUE];
       const newValue = map(oldValue);

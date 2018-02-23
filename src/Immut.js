@@ -6,14 +6,12 @@ function Immut(source, onChange) {
 }
 Object.defineProperties(Immut.prototype, {
   get: {
-    enumerable: true,
-    value: function() {
+    value() {
       return this[VALUE];
     },
   },
   set: {
-    enumerable: true,
-    value: function(map) {
+    value(map) {
       this[CHANGE](this, map(this[VALUE]));
     },
   },

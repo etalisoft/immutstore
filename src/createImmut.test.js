@@ -13,7 +13,7 @@ describe('createImmut', () => {
     });
   });
 
-  it('[] should return ImmutPrimimtive', () => {
+  it('[] should return ImmutArray', () => {
     const immut = createImmut([]);
     expect(immut).toBeInstanceOf(Immut);
     expect(immut).toBeInstanceOf(ImmutArray);
