@@ -4,13 +4,14 @@ import Immut from './Immut';
 
 function ImmutArray(source, onChange) {
   function itemChange(item, value) {
-    const result = this[VALUE].map(v => v.get());
+    const result = this.get();
     result[this[VALUE].indexOf(item)] = value;
     onChange(this, result);
   }
   const ic = itemChange.bind(this);
 
   const _source = source.map(v => createImmut(v, ic));
+
   for (let k in _source) {
     Object.defineProperty(this, k.toString(), {
       enumerable: true,

@@ -30,7 +30,7 @@ describe('ImmutArray', () => {
     const immut = new ImmutArray(init);
     const result = immut.get();
     result[1] = 'b';
-    expect(immut.get()).toEqual(init);
+    expect(immut.get()).toEqual(['a', 1]);
   });
 
   it('immut.set(obj) should call parent.set()', () => {
