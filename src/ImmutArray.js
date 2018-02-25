@@ -10,7 +10,13 @@ function ImmutArray(source, onChange) {
   }
   const ic = itemChange.bind(this);
 
-  const _source = source.map(v => createImmut(v, ic));
+  const _source = source.reduce((a, v, i) => {
+    const immut = createImmut(v, ic);
+    if (immut) {
+      a[i] = immut;
+    }
+    return a;
+  }, []);
 
   for (let k in _source) {
     Object.defineProperty(this, k.toString(), {
@@ -31,7 +37,7 @@ function ImmutArray(source, onChange) {
 ImmutArray.prototype = Object.create(Immut.prototype, {
   get: {
     value: function() {
-      return this[VALUE].map(v => (v ? v.get() : undefined));
+      return this[VALUE].map(v => v.get());
     },
   },
   length: {

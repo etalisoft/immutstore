@@ -13,6 +13,12 @@ describe('ImmutObject', () => {
     expect(immut[Symbol.iterator]).toBeTruthy();
   });
 
+  it('should remove keys for undefined values', () => {
+    const init = { a: 'a', b: undefined, c: undefined, d: 'd' };
+    const immut = new ImmutObject(init);
+    expect(immut.get()).toEqual({ a: 'a', d: 'd' });
+  });
+
   it('immut.get() should return clone of source', () => {
     const change = jest.fn();
     const init = { a: 'a' };

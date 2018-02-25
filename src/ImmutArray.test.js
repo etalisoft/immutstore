@@ -19,8 +19,15 @@ describe('ImmutArray', () => {
     expect(immut[Symbol.iterator]).toBeTruthy();
   });
 
+  it('should remove keys for undefined values', () => {
+    const init = ['a', false, null, undefined, 0, {}, []];
+    const immut = new ImmutArray(init);
+    expect(Object.keys(immut)).toEqual(['0', '1', '2', '4', '5', '6']);
+  });
+
   it('immut.get() should return clone of source', () => {
     const init = ['a', 1];
+    init[5] = true;
     const immut = new ImmutArray(init);
     expect(immut.get()).toEqual(init);
   });
