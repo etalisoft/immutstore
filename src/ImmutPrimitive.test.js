@@ -1,11 +1,9 @@
 import ImmutPrimitive from './ImmutPrimitive';
 
 describe('ImmutPrimitive', () => {
-  // new ImmutPrimitive(1).get() === 1
   it('primitive.get() should return value', () => {
-    const value = 1;
-    const immut = new ImmutPrimitive(value);
-    expect(immut.get()).toBe(value);
+    const immut = new ImmutPrimitive(1);
+    expect(immut.get()).toBe(1);
   });
 
   it('primitive.set(a => b) should call parent.set()', () => {
