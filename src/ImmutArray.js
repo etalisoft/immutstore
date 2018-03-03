@@ -1,43 +1,50 @@
-import { PARENT, VALUE } from './constants';
+import { VALUE } from './constants';
 import createImmut from './createImmut';
 import Immut from './Immut';
+import update from './update';
 
 function ImmutArray(source, onChange) {
-  function itemChange(item, value) {
-    const result = this.get();
-    result[this[VALUE].indexOf(item)] = value;
-    onChange(this, result);
+  function itemChange(curr, next) {
+    const newValue =
+      this === curr
+        ? // Array is being updated
+          createImmut(next, _itemChange)
+        : // Single item is being updated.  Need to create a new ItemArray
+          new ImmutArray(update(this[VALUE], [], curr, next), onChange);
+    onChange(this, newValue);
   }
-  const ic = itemChange.bind(this);
+  const _itemChange = itemChange.bind(this);
 
-  const _source = source.reduce((a, v, i) => {
-    const immut = createImmut(v, ic);
-    if (immut) {
-      a[i] = immut;
+  const _source = [];
+  for (let k in source) {
+    const v = createImmut(source[k], _itemChange);
+    if (v) {
+      _source[k] = v;
+      Object.defineProperty(this, k.toString(), {
+        enumerable: true,
+        get() {
+          return v;
+        },
+        set(value) {
+          _itemChange(v, value);
+        },
+      });
     }
-    return a;
-  }, []);
-
-  for (let k in _source) {
-    Object.defineProperty(this, k.toString(), {
-      enumerable: true,
-      get() {
-        return _source[k];
-      },
-      set(value) {
-        ic(_source[k], value);
-      },
-    });
   }
 
-  Immut.call(this, _source, ic);
+  Immut.call(this, _source, _itemChange);
   Object.freeze(this);
 }
 
 ImmutArray.prototype = Object.create(Immut.prototype, {
   get: {
-    value: function() {
-      return this[VALUE].map(v => v.get());
+    value() {
+      const arr = [];
+      const source = this[VALUE];
+      for (let k in source) {
+        arr[k] = source[k].get();
+      }
+      return arr;
     },
   },
   length: {

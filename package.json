@@ -1,22 +1,51 @@
 {
-  "name": "immut-store",
+  "name": "immutstore",
   "version": "1.0.0",
   "scripts": {
-    "test": "jest",
-    "watch": "jest --watch",
-    "cov": "jest --coverage"
+    "clean": "rimraf lib dist es coverage",
+    "format": "prettier --write \"{src,test}/**/*.js\"",
+    "format:check": "prettier --list-different \"{src,test}/**/*.js\"",
+    "lint": "eslint src test build",
+    "build:commonjs": "cross-env NODE_ENV=cjs rollup -c -o lib/immutstore.js",
+    "build:es": "cross-env BABEL_ENV=es NODE_ENV=es rollup -c -o es/immutstore.js",
+    "build:umd": "cross-env BABEL_ENV=es NODE_ENV=development rollup -c -o dist/immutstore.js",
+    "build:umd:min": "cross-env BABEL_ENV=es NODE_ENV=production rollup -c -o dist/immutstore.min.js",
+    "build": "npm run build:commonjs && npm run build:es && npm run build:umd && npm run build:umd:min",
+    "prepare": "npm run clean && npm run format:check && npm run lint && npm test && npm run build",
+    "test": "cross-env BABEL_ENV=commonjs jest",
+    "watch": "yarn test --watch",
+    "cov": "yarn test --coverage"
   },
   "main": "",
   "author": "Jason Whitted <etalisoft@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.2",
     "babel-jest": "^22.4.1",
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
     "babel-preset-es2015": "^6.24.1",
+    "cross-env": "^5.1.3",
+    "eslint": "^4.18.2",
+    "eslint-config-react-app": "^2.1.0",
+    "eslint-plugin-flowtype": "^2.46.1",
+    "eslint-plugin-import": "^2.9.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.7.0",
     "jest": "^22.4.1",
-    "regenerator-runtime": "^0.11.1"
+    "prettier": "^1.11.1",
+    "regenerator-runtime": "^0.11.1",
+    "rollup": "^0.56.3",
+    "rollup-plugin-babel": "^3.0.3",
+    "rollup-plugin-node-resolve": "^3.0.3",
+    "rollup-plugin-replace": "^2.0.0",
+    "rollup-plugin-uglify": "^3.0.0"
   },
-  "babel": {
-    "presets": [["es2015"]]
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all",
+    "printWidth": 120
   }
 }

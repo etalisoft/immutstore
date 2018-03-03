@@ -1,54 +1,55 @@
 import { VALUE } from './constants';
 import createImmut from './createImmut';
 import Immut from './Immut';
+import update from './update';
 
 function ImmutObject(source, onChange) {
-  function itemChange(item, value) {
-    const obj = this[VALUE];
-    const key = Object.keys(obj).find(k => obj[k] === item);
-    const result = this.get();
-    result[key] = value;
-    onChange(this, result);
+  function propChange(curr, next) {
+    const newValue =
+      this === curr
+        ? // Object is being updated
+          createImmut(next, _propChange)
+        : // Single prop is being updated.  Need to create a new ImmutObject
+          new ImmutObject(update(this[VALUE], {}, curr, next), onChange);
+    onChange(this, newValue);
   }
-  const ic = itemChange.bind(this);
+  const _propChange = propChange.bind(this);
 
-  const _source = Object.keys(source).reduce((o, k) => {
-    o[k] = createImmut(source[k], ic);
-    return o;
-  }, {});
-
-  for (let k in _source) {
-    Object.defineProperty(this, k.toString(), {
-      enumerable: true,
-      get() {
-        return _source[k];
-      },
-      set(value) {
-        ic(_source[k], value);
-      },
-    });
+  const _source = {};
+  for (let k in source) {
+    const v = createImmut(source[k], _propChange);
+    if (v) {
+      _source[k] = v;
+      Object.defineProperty(this, k.toString(), {
+        enumerable: true,
+        get() {
+          return v;
+        },
+        set(value) {
+          _propChange(v, value);
+        },
+      });
+    }
   }
 
-  Immut.call(this, _source, ic);
+  Immut.call(this, _source, _propChange);
   Object.freeze(this);
 }
 
 ImmutObject.prototype = Object.create(Immut.prototype, {
   get: {
-    value: function() {
+    value() {
+      const o = {};
       const source = this[VALUE];
-      return Object.keys(source).reduce((o, k) => {
-        const immut = source[k];
-        if (immut) {
-          o[k] = immut.get();
-        }
-        return o;
-      }, {});
+      for (let k in source) {
+        o[k] = source[k].get();
+      }
+      return o;
     },
   },
   [Symbol.iterator]: {
     value: function*() {
-      yield* this[VALUE];
+      yield this[VALUE];
     },
   },
 });

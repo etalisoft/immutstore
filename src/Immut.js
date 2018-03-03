@@ -1,9 +1,10 @@
-import { CHANGE, VALUE } from './constants';
+import { VALUE, CHANGE } from './constants';
 
 function Immut(source, onChange) {
   this[VALUE] = source;
   this[CHANGE] = onChange;
 }
+
 Object.defineProperties(Immut.prototype, {
   get: {
     value() {

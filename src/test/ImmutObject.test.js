@@ -1,16 +1,18 @@
-import ImmutObject from './ImmutObject';
+import ImmutObject from '../ImmutObject';
 
 describe('ImmutObject', () => {
   it('ImmutObject.key should return Immut for source.key', () => {
-    const init = { a: 'a' };
+    const init = { a: 'a', b: 'b', c: 'c' };
     const immut = new ImmutObject(init);
-    expect(immut.a.get()).toBe(init.a);
+    expect(immut.b.get()).toBe(init.b);
   });
 
   it('ImmutObject should be an iterator', () => {
-    const init = { a: 'a' };
+    const init = { a: 'a', b: 'b', c: 'c' };
     const immut = new ImmutObject(init);
-    expect(immut[Symbol.iterator]).toBeTruthy();
+    for (let value of immut) {
+      expect(value).toBeTruthy();
+    }
   });
 
   it('should remove keys for undefined values', () => {
@@ -41,6 +43,8 @@ describe('ImmutObject', () => {
     const identity = a => a;
     immut.set(identity);
     expect(change).toHaveBeenCalled();
+    expect(change.mock.calls[0][0]).toBe(immut);
+    expect(change.mock.calls[0][1].get()).toEqual({});
   });
 
   it('immut.key.set(obj) should call parent.set()', () => {
@@ -48,7 +52,9 @@ describe('ImmutObject', () => {
     const change = jest.fn();
     const immut = new ImmutObject(init, change);
     immut.key.set(() => 'def');
-    expect(change).toHaveBeenCalledWith(immut, { key: 'def' });
+    expect(change).toHaveBeenCalled();
+    expect(change.mock.calls[0][0]).toBe(immut);
+    expect(change.mock.calls[0][1].get()).toEqual({ key: 'def' });
   });
 
   it('immut.key = obj should call parent.set()', () => {
@@ -56,6 +62,8 @@ describe('ImmutObject', () => {
     const change = jest.fn();
     const immut = new ImmutObject(init, change);
     immut.key = 'def';
-    expect(change).toHaveBeenCalledWith(immut, { key: 'def' });
+    expect(change).toHaveBeenCalled();
+    expect(change.mock.calls[0][0]).toBe(immut);
+    expect(change.mock.calls[0][1].get()).toEqual({ key: 'def' });
   });
 });

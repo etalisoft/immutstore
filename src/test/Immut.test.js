@@ -1,8 +1,8 @@
-import Immut from './Immut';
+import Immut from '../Immut';
 
 describe('Immut', () => {
   it('should return an Immut', () => {
-    const immut = new Immut(1);
+    const immut = new Immut(123);
     expect(immut).toBeInstanceOf(Immut);
   });
 
@@ -14,9 +14,9 @@ describe('Immut', () => {
     expect(mutate).not.toThrow();
   });
 
-  it('immut.get() should return value', () => {
-    const immut = new Immut(1);
-    expect(immut.get()).toBe(1);
+  it('immut.get() should return the value', () => {
+    const immut = new Immut(123);
+    expect(immut.get()).toBe(123);
   });
 
   describe('immut.set()', () => {

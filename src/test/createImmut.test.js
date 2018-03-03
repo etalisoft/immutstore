@@ -1,8 +1,8 @@
-import createImmut from './createImmut';
-import Immut from './Immut';
-import ImmutArray from './ImmutArray';
-import ImmutObject from './ImmutObject';
-import ImmutPrimitive from './ImmutPrimitive';
+import createImmut from '../createImmut';
+import Immut from '../Immut';
+import ImmutArray from '../ImmutArray';
+import ImmutObject from '../ImmutObject';
+import ImmutPrimitive from '../ImmutPrimitive';
 
 describe('createImmut', () => {
   ['abc', 123, true, null].forEach(value => {

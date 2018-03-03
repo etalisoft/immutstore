@@ -1,4 +1,4 @@
-import ImmutArray from './ImmutArray';
+import ImmutArray from '../ImmutArray';
 
 describe('ImmutArray', () => {
   it('ImmutArray.length should return source.length', () => {
@@ -16,7 +16,9 @@ describe('ImmutArray', () => {
   it('ImmutArray should be an iterator', () => {
     const init = [1, 2];
     const immut = new ImmutArray(init);
-    expect(immut[Symbol.iterator]).toBeTruthy();
+    for (let value of immut) {
+      expect(value).toBeTruthy();
+    }
   });
 
   it('should remove keys for undefined values', () => {
@@ -47,7 +49,7 @@ describe('ImmutArray', () => {
     const identity = a => a;
     immut.set(identity);
     expect(change.mock.calls[0][0]).toBe(immut);
-    expect(JSON.stringify(change.mock.calls[0][1])).toEqual(JSON.stringify(init));
+    expect(change.mock.calls[0][1].get()).toEqual(['a', 1]);
   });
 
   it('immut[i].set(obj) should call parent.set()', () => {
@@ -55,7 +57,8 @@ describe('ImmutArray', () => {
     const change = jest.fn();
     const immut = new ImmutArray(init, change);
     immut[1].set(() => 'b');
-    expect(change).toHaveBeenCalledWith(immut, ['a', 'b']);
+    expect(change.mock.calls[0][0]).toBe(immut);
+    expect(change.mock.calls[0][1].get()).toEqual(['a', 'b']);
   });
 
   it('immut[i] = obj should call parent.set()', () => {
@@ -63,6 +66,7 @@ describe('ImmutArray', () => {
     const change = jest.fn();
     const immut = new ImmutArray(init, change);
     immut[1] = 'b';
-    expect(change).toHaveBeenCalledWith(immut, ['a', 'b']);
+    expect(change.mock.calls[0][0]).toBe(immut);
+    expect(change.mock.calls[0][1].get()).toEqual(['a', 'b']);
   });
 });
