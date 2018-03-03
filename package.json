@@ -1,6 +1,6 @@
 {
   "name": "immutstore",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "scripts": {
     "clean": "rimraf lib dist es coverage",
     "format": "prettier --write \"{src,test}/**/*.js\"",
